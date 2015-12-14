@@ -317,7 +317,7 @@ fb_cb_api_messages(FbApi *api, GSList *msgs, gpointer data)
     acct = ic->acc;
     mark = set_getbool(&acct->set, "mark_read");
     open = set_getbool(&acct->set, "group_chat_open");
-    selfmess = (set_find(&ic->bee->set, "self_messages") != NULL);
+    selfmess = 1; // (set_find(&ic->bee->set, "self_messages") != NULL);
 
     for (l = msgs; l != NULL; l = l->next) {
         msg = l->data;
@@ -609,25 +609,17 @@ fb_groupchat_new(struct im_connection *ic, FbId tid, const gchar *name)
 static void
 fb_init(account_t *acct)
 {
-    set_t *s;
+    set_add_with_flags(&acct->set, "cid", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN);
 
-    s = set_add(&acct->set, "cid", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN;
+    set_add_with_flags(&acct->set, "did", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN);
 
-    s = set_add(&acct->set, "did", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN;
+    set_add_with_flags(&acct->set, "mid", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN);
 
-    s = set_add(&acct->set, "mid", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN;
+    set_add_with_flags(&acct->set, "token", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN | SET_PASSWORD);
 
-    s = set_add(&acct->set, "token", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN | SET_PASSWORD;
+    set_add_with_flags(&acct->set, "stoken", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN);
 
-    s = set_add(&acct->set, "stoken", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN;
-
-    s = set_add(&acct->set, "uid", NULL, NULL, acct);
-    s->flags = SET_NULL_OK | SET_HIDDEN;
+    set_add_with_flags(&acct->set, "uid", NULL, NULL, acct, SET_NULL_OK | SET_HIDDEN);
 
     set_add(&acct->set, "group_chat_open", "false", set_eval_bool, acct);
     set_add(&acct->set, "mark_read", "false", set_eval_bool, acct);
